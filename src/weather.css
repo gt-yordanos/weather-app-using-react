@@ -1,5 +1,5 @@
 .container{
-  background: rgba(255, 255, 255, 0.111);
+  background: rgba(255, 255, 255, 0.221);
   width: 30%;
   padding: 3rem 2rem 2rem 2rem;
   display: flex;
@@ -7,7 +7,6 @@
   align-items: center;
   flex-direction: column;
   gap: 5px;
-  border: 1px solid black;
 }
 
 .search-box{
