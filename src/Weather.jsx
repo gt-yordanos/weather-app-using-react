@@ -36,6 +36,23 @@ const Weather = () => {
     }
   }
 
+  let weatherIcon;
+  if (weatherData) {
+    switch (weatherData.weather[0].main) {
+      case 'Rain':
+        weatherIcon = rainIcon;
+        break;
+      case 'Clouds':
+        weatherIcon = cloudIcon;
+        break;
+      case 'Clear':
+        weatherIcon = sunIcon;
+        break;
+      default:
+        weatherIcon = cloudSunIcon; // Use a default icon like partly cloudy
+    }
+  }
+
   return (
     <div className='container'>
       <div className="search-box">
