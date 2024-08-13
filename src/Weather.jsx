@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import BarLoader from 'react-spinners/BarLoader'; 
 import searchIcon from './assets/icons8-search-30.png';
 import locationIcon from './assets/location.png';
 import moistureIcon from './assets/moisture.png';
@@ -14,8 +15,10 @@ const Weather = () => {
   const inputRef = useRef(null);
   const [weatherData, setWeatherData] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // Define the loading state
 
   async function updateWeather(city = null, lat = null, lon = null) {
+    setLoading(true); // Start loading
     let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&appid=${apiKey}`;
     
     if (lat && lon) {
@@ -24,9 +27,10 @@ const Weather = () => {
       url += `&q=${city}`;
     } else {
       setError("No city or coordinates provided");
+      setLoading(false); // Stop loading
       return;
     }
-
+  
     try {
       const response = await fetch(url);
       const result = await response.json();
@@ -40,8 +44,11 @@ const Weather = () => {
     } catch (error) {
       console.error("Error fetching weather data:", error);
       setError("An unexpected error occurred.");
+    } finally {
+      setLoading(false); // Stop loading after the request is complete
     }
   }
+  
 
   useEffect(() => {
     // Get the user's current location
@@ -82,24 +89,28 @@ const Weather = () => {
           <img src={searchIcon} alt="search" onClick={() => updateWeather(inputRef.current.value)} />
         </div>
       </div>
-
+  
       {error && <div className="error-message">{error}</div>}
-
-      {weatherData && (
+  
+      {loading ? ( 
+        <div className="loading-spinner">
+          <BarLoader color="#000" size={50} /> {/* Spinner here */}
+        </div>
+      ) : weatherData && (
         <>
           <div className="location">
             <p><img src={locationIcon} alt="location" />{weatherData.name}</p>
           </div>
-
+  
           <div className="main-weather">
-          <img src={weatherIcon} alt="" />
+            <img src={weatherIcon} alt="" />
             <p>{weatherData.weather[0].main}</p>
           </div>
-
+  
           <div className="temperature">
             <span>{Math.round(weatherData.main.temp)}</span>°C
           </div>
-
+  
           <div className="details">
             <div className="col">
               <div className="info">
@@ -108,7 +119,7 @@ const Weather = () => {
               </div>
               <p className='type'>Moisture</p>
             </div>
-
+  
             <div className="col">
               <div className="info">
                 <img src={windIcon} alt="wind" />
@@ -121,6 +132,6 @@ const Weather = () => {
       )}
     </div>
   );
-}
+} 
 
 export default Weather;

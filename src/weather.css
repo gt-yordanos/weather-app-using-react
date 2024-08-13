@@ -111,3 +111,10 @@
   color: #c0cfd7b5;
   margin-top: 10px;
 }
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh; 
+}
