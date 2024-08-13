@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import searchIcon from './assets/icons8-search-30.png';
 import locationIcon from './assets/location.png';
 import moistureIcon from './assets/moisture.png';
@@ -15,8 +15,17 @@ const Weather = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [error, setError] = useState(null);
 
-  async function updateWeather(city) {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`;
+  async function updateWeather(city = null, lat = null, lon = null) {
+    let url = `https://api.openweathermap.org/data/2.5/weather?units=metric&appid=${apiKey}`;
+    
+    if (lat && lon) {
+      url += `&lat=${lat}&lon=${lon}`;
+    } else if (city) {
+      url += `&q=${city}`;
+    } else {
+      setError("No city or coordinates provided");
+      return;
+    }
 
     try {
       const response = await fetch(url);
@@ -26,15 +35,27 @@ const Weather = () => {
         setWeatherData(result);
         setError(null); // Clear any previous errors
       } else {
-        setWeatherData(null);
-        setError(result.message); // Set the error message returned by the API
+        setError(result.message); // Set the error message returned by the API, but keep the previous weather data
       }
-      console.log(result);
     } catch (error) {
       console.error("Error fetching weather data:", error);
       setError("An unexpected error occurred.");
     }
   }
+
+  useEffect(() => {
+    // Get the user's current location
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        updateWeather(null, latitude, longitude);
+      },
+      (error) => {
+        console.error("Error getting location:", error);
+        setError("Unable to retrieve your location.");
+      }
+    );
+  }, []);
 
   let weatherIcon;
   if (weatherData) {
@@ -51,7 +72,7 @@ const Weather = () => {
       default:
         weatherIcon = cloudSunIcon; // Use a default icon like partly cloudy
     }
-  }
+  } 
 
   return (
     <div className='container'>
@@ -71,7 +92,7 @@ const Weather = () => {
           </div>
 
           <div className="main-weather">
-            <img src={weatherIcon} alt="weather icon" />
+          <img src={weatherIcon} alt="" />
             <p>{weatherData.weather[0].main}</p>
           </div>
 
