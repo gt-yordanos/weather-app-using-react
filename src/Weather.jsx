@@ -11,11 +11,11 @@ import cloudIcon from './assets/cloud.png';
 import './weather.css';
 
 const Weather = () => {
-  const apiKey = "e86e83663143a91adb953b7006a37d6d";
+  const apiKey = import.meta.env.VITE_API_KEY; 
   const inputRef = useRef(null);
   const [weatherData, setWeatherData] = useState(null);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false); // Define the loading state
+  const [loading, setLoading] = useState(false);
 
   async function updateWeather(city = null, lat = null, lon = null) {
     setLoading(true); // Start loading
@@ -37,19 +37,20 @@ const Weather = () => {
       
       if (result.cod === 200) {
         setWeatherData(result);
-        setError(null); // Clear any previous errors
+        setError(null); 
       } else {
-        setError(result.message); // Set the error message returned by the API, but keep the previous weather data
+        setError(result.message);
+        setWeatherData(null); // Clear weather data on error
       }
     } catch (error) {
       console.error("Error fetching weather data:", error);
       setError("An unexpected error occurred.");
+      setWeatherData(null); // Clear weather data on error
     } finally {
-      setLoading(false); // Stop loading after the request is complete
+      setLoading(false);
     }
   }
   
-
   useEffect(() => {
     // Get the user's current location
     navigator.geolocation.getCurrentPosition(
@@ -77,7 +78,7 @@ const Weather = () => {
         weatherIcon = sunIcon;
         break;
       default:
-        weatherIcon = cloudSunIcon; // Use a default icon like partly cloudy
+        weatherIcon = cloudSunIcon;
     }
   } 
 
@@ -92,46 +93,50 @@ const Weather = () => {
   
       {error && <div className="error-message">{error}</div>}
   
-      {loading ? ( 
+      {loading && (
         <div className="loading-spinner">
-          <BarLoader color="#000" size={50} /> {/* Spinner here */}
+          <BarLoader color="#000" size={50} />
         </div>
-      ) : weatherData && (
-        <>
-          <div className="location">
-            <p><img src={locationIcon} alt="location" />{weatherData.name}</p>
-          </div>
-  
-          <div className="main-weather">
-            <img src={weatherIcon} alt="" />
-            <p>{weatherData.weather[0].main}</p>
-          </div>
-  
-          <div className="temperature">
-            <span>{Math.round(weatherData.main.temp)}</span>°C
-          </div>
-  
-          <div className="details">
-            <div className="col">
-              <div className="info">
-                <img src={moistureIcon} alt="moisture" />
-                <p><span>{weatherData.main.humidity}</span>%</p>
-              </div>
-              <p className='type'>Moisture</p>
-            </div>
-  
-            <div className="col">
-              <div className="info">
-                <img src={windIcon} alt="wind" />
-                <p><span>{Math.round(weatherData.wind.speed)}</span> Km/hr</p>
-              </div>
-              <p className='type'>Wind</p>
-            </div>
-          </div>
-        </>
       )}
+
+      <div className={`mainDiv ${loading ? 'seeThrough' : ''}`}>
+        {weatherData && (
+          <>
+            <div className="location">
+              <p><img src={locationIcon} alt="location" />{weatherData.name}</p>
+            </div>
+    
+            <div className="main-weather">
+              <img src={weatherIcon} alt="" />
+              <p>{weatherData.weather[0].main}</p>
+            </div>
+    
+            <div className="temperature">
+              <span>{Math.round(weatherData.main.temp)}</span>°C
+            </div>
+    
+            <div className="details">
+              <div className="col">
+                <div className="info">
+                  <img src={moistureIcon} alt="moisture" />
+                  <p><span>{weatherData.main.humidity}</span>%</p>
+                </div>
+                <p className='type'>Moisture</p>
+              </div>
+    
+              <div className="col">
+                <div className="info">
+                  <img src={windIcon} alt="wind" />
+                  <p><span>{Math.round(weatherData.wind.speed)}</span> Km/hr</p>
+                </div>
+                <p className='type'>Wind</p>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
-} 
+}
 
 export default Weather;
