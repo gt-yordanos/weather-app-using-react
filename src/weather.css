@@ -97,7 +97,7 @@
   align-items: center;
   flex-direction: column;
   padding: 20px;
-  width: 30%;
+  width: 33%;
   border-radius: 5px;
 }
 .col .info{
@@ -149,6 +149,4 @@
 }
 
 @media screen and (max-width: 700px) {
-.container{
-}
 }
