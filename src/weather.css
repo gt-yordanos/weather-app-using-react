@@ -9,9 +9,12 @@
   flex-direction: column;
   gap: 5px;
   border: 1px solid black;
+  min-height: 450px;
+  min-width: 350px;
 }
 
 .search-box{
+  position: relative;
   background: #ffffff;
   width: 85%;
   display: flex;
@@ -26,7 +29,7 @@
   border: none;
   outline: none;
   width: 80%;
-  height: 100%;
+  height: 40px;
   font-weight: 500;
   font-size: 16px;
   background: transparent;
@@ -118,15 +121,19 @@
   justify-content: center;
   align-items: center;
 }
-
+.errorContainer{
+  width: 60%;
+  height: 20px;
+  margin-bottom: 5px;
+}
 .error-message {
-  background: #f7f3f3c9;
-  padding: 5px 15px;
-  color: rgb(216, 13, 13);
-  font-weight: 600;
-  margin-top: 10px;
+  background: #2e2d2d;
+  padding: 3px 16px;
+  color: rgb(244, 72, 72);
+  font-size: 0.8rem;
+  font-weight: 500;
   text-align: center;
-  border-radius: 5px;
+  border-radius: 3px;
 }
 
 .mainDiv{
@@ -139,4 +146,9 @@
 
 .seeThrough{
   opacity: 0.3;
+}
+
+@media screen and (max-width: 700px) {
+.container{
+}
 }

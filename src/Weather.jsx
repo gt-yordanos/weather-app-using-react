@@ -40,7 +40,6 @@ const Weather = () => {
         setError(null); 
       } else {
         setError(result.message);
-        setWeatherData(null); // Clear weather data on error
       }
     } catch (error) {
       console.error("Error fetching weather data:", error);
@@ -84,14 +83,13 @@ const Weather = () => {
 
   return (
     <div className='container'>
+     <div className='errorContainer'> {error && <p className="error-message">{error}</p>}</div>
       <div className="search-box">
         <input type="text" placeholder='Search for city' ref={inputRef} />
         <div className="icon-box">
           <img src={searchIcon} alt="search" onClick={() => updateWeather(inputRef.current.value)} />
         </div>
       </div>
-  
-      {error && <div className="error-message">{error}</div>}
   
       {loading && (
         <div className="loading-spinner">
